@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.github.bogdanovmn.translating.service</groupId>
+	<artifactId>translating-service</artifactId>
+	<version>${revision}</version>
+	<packaging>pom</packaging>
+
+	<name>Translating services</name>
+	<description>Translating services</description>
+	<url>http://github.com/bogdanovmn/java-translating-service</url>
+
+	<modules>
+		<module>translating-service-core</module>
+		<module>translating-service-google</module>
+		<module>translating-service-yandex</module>
+		<module>translating-service-cli</module>
+	</modules>
+
+	<properties>
+		<encoding>UTF-8</encoding>
+		<java.version>1.8</java.version>
+		<revision>0.1.0</revision>
+		<http-client.version>3.0.0</http-client.version>
+	</properties>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Mikhail N Bogdanov</name>
+			<email>bogdanovmn@gmail.com</email>
+			<organization>Open source</organization>
+			<organizationUrl>http://github.com/bogdanovmn/</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/bogdanovmn/java-translating-service.git</connection>
+		<developerConnection>scm:git:ssh://github.com:bogdanovmn/java-translating-service.git</developerConnection>
+		<url>http://github.com/bogdanovmn/java-translating-service</url>
+	</scm>
+
+	<dependencyManagement>
+		<dependencies>
+
+			<!-- Modules -->
+			<dependency>
+				<groupId>com.github.bogdanovmn.translating.service.core</groupId>
+				<artifactId>translating-service-core</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.bogdanovmn.translating.service.google</groupId>
+				<artifactId>translating-service-google</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.bogdanovmn.translating.service.yandex</groupId>
+				<artifactId>translating-service-yandex</artifactId>
+				<version>${revision}</version>
+			</dependency>
+
+			<!-- My Libs -->
+
+			<dependency>
+				<groupId>com.github.bogdanovmn.cmdline</groupId>
+				<artifactId>cmdline-app</artifactId>
+				<version>2.1.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.bogdanovmn.httpclient.core</groupId>
+				<artifactId>http-client-core</artifactId>
+				<version>${http-client.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.bogdanovmn.httpclient.phantomjs</groupId>
+				<artifactId>http-client-phantomjs</artifactId>
+				<version>${http-client.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.bogdanovmn.httpclient.simple</groupId>
+				<artifactId>http-client-simple</artifactId>
+				<version>${http-client.version}</version>
+			</dependency>
+
+			<!-- Libs -->
+
+			<dependency>
+				<groupId>org.jsoup</groupId>
+				<artifactId>jsoup</artifactId>
+				<version>1.10.3</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<encoding>${encoding}</encoding>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<testSource>${java.version}</testSource>
+					<testTarget>${java.version}</testTarget>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>1.0.1</version>
+				<configuration>
+				</configuration>
+				<executions>
+					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>flatten.clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.8</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.2.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>3.2.0</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+</project>
